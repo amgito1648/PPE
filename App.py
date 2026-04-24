@@ -43,24 +43,26 @@ if uploaded_file is not None and model is not None:
     st.subheader("Imagen Original")
     st.image(image, use_container_width=True)
     
-    # Botón para procesar
     if st.button("Realizar Detección"):
-        with st.spinner('La IA está analizando la imagen...'):
-            # Realizar la predicción
-            # Convertimos a numpy array para evitar problemas de formato
-            img_input = np.array(image)
-            results = model.predict(source=img_input, conf=conf_threshold)
+        with st.spinner('Analizando...'):
+            # 1. Convertimos la imagen de PIL a un array de OpenCV (que es BGR)
+            # Esto asegura que YOLO reciba lo que espera
+            file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+            opencv_img = cv2.imdecode(file_bytes, 1)
 
-            # Obtener la imagen con las cajas dibujadas
-            # IMPORTANTE: YOLO entrega esto en formato BGR (estándar de OpenCV)
+            # 2. Predicción
+            results = model.predict(source=opencv_img, conf=conf_threshold)
+
+            # 3. Dibujar resultados (YOLO dibuja en BGR sobre una imagen BGR)
             res_plotted = results[0].plot()
 
-            # CORRECCIÓN DE COLOR: De BGR a RGB para que no se vea azul
+            # 4. LA SOLUCIÓN MANUAL: Forzamos la conversión de BGR a RGB
+            # Si esto no funciona, intercambiaremos los canales a mano
             res_rgb = cv2.cvtColor(res_plotted, cv2.COLOR_BGR2RGB)
 
             # Mostrar resultado
             st.subheader("Resultado de la Detección")
-            st.image(res_rgb, caption="Detecciones de la IA", use_container_width=True)
+            st.image(res_rgb, caption="Detecciones con colores corregidos", use_container_width=True)
 
             # 5. Mostrar estadísticas de lo detectado
             st.divider()
