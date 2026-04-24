@@ -29,18 +29,22 @@ if uploaded_file is not None:
         st.subheader("Imagen Original")
         st.image(image, use_column_width=True)
 
+    
+    
     with col2:
         st.subheader("Detección de IA")
         
-        # 3. Realizar la predicción
-        results = model.predict(image, conf=0.4) # conf=0.4 es el umbral de confianza
+        # 1. Realizar la predicción
+        results = model.predict(image, conf=0.4)
         
-        # 4. Dibujar los resultados en la imagen
-        # YOLO devuelve los resultados en un formato que se puede plotear directamente
+        # 2. Dibujar los resultados (esto sale en BGR)
         res_plotted = results[0].plot()
         
-        # Mostrar la imagen con las cajitas (bounding boxes)
-        st.image(res_plotted, caption='Resultados del Escaneo', use_column_width=True)
+        # 3. ¡LA CORRECCIÓN! Convertir de BGR a RGB
+        res_rgb = cv2.cvtColor(res_plotted, cv2.COLOR_BGR2RGB)
+        
+        # 4. Mostrar la imagen corregida
+        st.image(res_rgb, caption='Resultados del Escaneo', use_column_width=True)
 
     # 5. Mostrar estadísticas en una tabla o lista
     st.divider()
