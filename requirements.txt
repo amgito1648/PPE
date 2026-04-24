@@ -1,15 +1,15 @@
 # Motor de la aplicación web
-streamlit==1.32.0
+streamlit
 
-# Motor de la IA (Versión exacta con la que entrenaste)
-ultralytics==8.4.39
+# Motor de la IA
+ultralytics
 
-# Procesamiento de imágenes y visualización
-opencv-python-headless==4.9.0.80
-pillow==10.2.0
-numpy==1.26.4
+# Procesamiento de imágenes
+opencv-python-headless
+pillow
+numpy
 
-# Utilidades de sistema
-pyyaml==6.0.1
-torch==2.2.1
-torchvision==0.17.1
+# Utilidades
+pyyaml
+torch
+torchvision
