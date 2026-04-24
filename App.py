@@ -45,24 +45,24 @@ if uploaded_file is not None and model is not None:
     
     if st.button("Realizar Detección"):
         with st.spinner('Analizando...'):
-            # 1. Convertimos la imagen de PIL a un array de OpenCV (que es BGR)
-            # Esto asegura que YOLO reciba lo que espera
-            file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-            opencv_img = cv2.imdecode(file_bytes, 1)
+            # 1. Convertir imagen de PIL a formato OpenCV (BGR)
+            # Esto es lo que YOLO espera recibir internamente
+            img_cv = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
-            # 2. Predicción
-            results = model.predict(source=opencv_img, conf=conf_threshold)
+            # 2. Predecir
+            results = model.predict(source=img_cv, conf=conf_threshold)
 
-            # 3. Dibujar resultados (YOLO dibuja en BGR sobre una imagen BGR)
+            # 3. Dibujar resultados
+            # res_plotted SIEMPRE saldrá en BGR porque lo dibujó OpenCV
             res_plotted = results[0].plot()
 
-            # 4. LA SOLUCIÓN MANUAL: Forzamos la conversión de BGR a RGB
-            # Si esto no funciona, intercambiaremos los canales a mano
+            # 4. LA SOLUCIÓN DEFINITIVA:
+            # Forzamos la conversión a RGB para Streamlit
             res_rgb = cv2.cvtColor(res_plotted, cv2.COLOR_BGR2RGB)
 
-            # Mostrar resultado
+            # 5. Mostrar resultado
             st.subheader("Resultado de la Detección")
-            st.image(res_rgb, caption="Detecciones con colores corregidos", use_container_width=True)
+            st.image(res_rgb, caption="¡Ahora sí con colores reales!", use_container_width=True)
 
             # 5. Mostrar estadísticas de lo detectado
             st.divider()
