@@ -85,3 +85,5 @@ elif model is None:
 # Pie de página
 st.markdown("---")
 st.caption("Desarrollado con YOLOv8 y Streamlit")
+
+st.caption("Cristian Cala @Unab")
